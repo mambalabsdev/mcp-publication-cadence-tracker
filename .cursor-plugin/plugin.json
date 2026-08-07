@@ -1,0 +1,36 @@
+{
+  "name": "mcp-publication-cadence-tracker",
+  "displayName": "Publication Cadence Tracker",
+  "version": "1.0.0",
+  "description": "MCP server for the Mamba Labs Publication Cadence Tracker actor on Apify. Give it a company domain and it returns how much long-form work that company publishes per month and whether the rate is rising or falling, as flat Clay-ready JSON.",
+  "author": {
+    "name": "Mamba Labs",
+    "email": "labs@mambamindsetgrowth.com"
+  },
+  "homepage": "https://mambabuilt.com",
+  "repository": "https://github.com/mambalabsdev/mcp-publication-cadence-tracker",
+  "license": "MIT",
+  "logo": "https://mmg-brand-assets.netlify.app/apify-actor-pngs/apify_webhook.png",
+  "category": "productivity",
+  "tags": [
+    "mcp",
+    "content-marketing",
+    "publishing",
+    "editorial",
+    "content-cadence",
+    "blog",
+    "apify",
+    "clay"
+  ],
+  "keywords": [
+    "mcp",
+    "content-marketing",
+    "publishing",
+    "editorial",
+    "content-cadence",
+    "blog",
+    "apify",
+    "clay"
+  ],
+  "mcpServers": ".mcp.json"
+}

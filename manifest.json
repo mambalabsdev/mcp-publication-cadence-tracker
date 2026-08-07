@@ -1,0 +1,37 @@
+{
+  "manifest_version": "0.3",
+  "name": "mcp-publication-cadence-tracker",
+  "version": "1.0.0",
+  "description": "MCP server for the Mamba Labs Publication Cadence Tracker actor on Apify. Give it a company domain and it returns how much long-form work that company publishes per month and whether the rate is rising or falling, as flat Clay-ready JSON.",
+  "author": {
+    "name": "Mamba Labs"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/mambalabsdev/mcp-publication-cadence-tracker",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mambalabsdev/mcp-publication-cadence-tracker"
+  },
+  "server": {
+    "type": "node",
+    "entry_point": "build/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/build/index.js"
+      ],
+      "env": {
+        "APIFY_TOKEN": "${user_config.apify_token}"
+      }
+    }
+  },
+  "user_config": {
+    "apify_token": {
+      "type": "string",
+      "title": "Apify API Token",
+      "description": "Apify API token for running the actor",
+      "sensitive": true,
+      "required": false
+    }
+  }
+}
