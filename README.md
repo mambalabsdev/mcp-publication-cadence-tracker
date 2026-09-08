@@ -12,7 +12,7 @@ Give it a company domain. It tells your agent how much long-form work that compa
 
 `track_publication_cadence`
 
-Returns a flat row per domain: `posts_last_30d`, `posts_last_90d`, `posts_last_12m`, `avg_posts_per_month`, `cadence_trend` (`accelerating`, `steady`, `declining`, `dormant`, `unknown`), `trend_pct_change`, `most_recent_post_date`, `days_since_last_post`, `blog_url`, `formats_detected[]`, `distinct_authors_count`, `discovery_method`, `confidence`, and an `evidence[]` array of quotable strings.
+Returns a flat row per domain: `posts_last_30d`, `posts_last_90d`, `posts_last_12m`, `avg_posts_per_month`, `cadence_trend` (`accelerating`, `steady`, `declining`, `dormant`, `unknown`), `trend_pct_change`, `most_recent_post_date`, `days_since_last_post`, `publication_url`, `formats_detected[]`, `distinct_authors_count`, `discovery_method`, `confidence`, and an `evidence[]` array of quotable strings.
 
 ## Why the trend and not the count
 
@@ -43,7 +43,7 @@ Measured on nine live domains: a rate recovered on 5 of 6 publishers, 3 of 3 con
 
 Not whether a company has a blog. How much it published, when, and whether the rate moved.
 
-Finding the blog is most of the work, and it is where a naive version fails. The blog often lives on a different host from the apex and the apex sitemap never mentions it (`blog.hubspot.com`). A homepage sometimes advertises only a changelog feed while linking to the real blog repeatedly (`about.gitlab.com`). Paths are often locale prefixed, so `/en-uk/` and `/bg-bg/` fragment the archive into forty pieces. All three are handled, and `blog_url` reports a locale-prefixed section as `https://example.com/*/knowledge/`.
+Finding the blog is most of the work, and it is where a naive version fails. The blog often lives on a different host from the apex and the apex sitemap never mentions it (`blog.hubspot.com`). A homepage sometimes advertises only a changelog feed while linking to the real blog repeatedly (`about.gitlab.com`). Paths are often locale prefixed, so `/en-uk/` and `/bg-bg/` fragment the archive into forty pieces. All three are handled, and `publication_url` reports a locale-prefixed section as `https://example.com/*/knowledge/`.
 
 **Three fields to read before you trust a number.** `date_source_reliable` false means the site's date field tracks edits rather than publication and every count has been nulled. `counts_are_estimate` true means the archive was larger than the page budget and the counts come from a scaled even sample, so two runs can differ by a few posts. `partial_result` true means the wall-clock budget stopped the crawl and the numbers are lower bounds.
 

@@ -144,9 +144,24 @@ server.registerTool(
         .boolean()
         .optional()
         .describe("Force a fresh crawl and ignore the 3 day result cache."),
+      page_concurrency: z
+        .number()
+        .int()
+        .optional()
+        .describe("How many pages are fetched concurrently within one domain."),
+      max_sitemap_fetches: z
+        .number()
+        .int()
+        .optional()
+        .describe("Cap on how many sitemap files are fetched per domain. Lower it to bound run time on sites with deeply nested sitemap indexes."),
+      request_timeout_ms: z
+        .number()
+        .int()
+        .optional()
+        .describe("Per-HTTP-request timeout in milliseconds."),
     },
   },
-  async ({ domain, domains, max_pages_to_date, domain_time_budget_ms, batchSize, skipCache }) => {
+  async ({ domain, domains, max_pages_to_date, domain_time_budget_ms, batchSize, skipCache, page_concurrency, max_sitemap_fetches, request_timeout_ms }) => {
     const hasSingle = domain !== undefined && domain !== "";
     const hasBatch = Array.isArray(domains) && domains.length > 0;
     if (!hasSingle && !hasBatch) {
@@ -165,6 +180,9 @@ server.registerTool(
         domain_time_budget_ms,
         batchSize,
         skipCache,
+        page_concurrency,
+        max_sitemap_fetches,
+        request_timeout_ms,
       }),
     );
   },
