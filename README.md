@@ -38,6 +38,9 @@ Measured on nine live domains: a rate recovered on 5 of 6 publishers, 3 of 3 con
 | `domain_time_budget_ms` | integer | Hard per-domain wall-clock ceiling, default 75000. |
 | `batchSize` | integer | Concurrent domains, default 2. |
 | `skipCache` | boolean | Ignore the 3 day result cache. |
+| `page_concurrency` | integer | 1 to 16, default 8. Pages fetched at once within one domain. |
+| `max_sitemap_fetches` | integer | 4 to 40, default 18. Cap on sitemap files fetched per domain. |
+| `request_timeout_ms` | integer | 3000 to 20000, default 9000. Per HTTP request timeout. |
 
 ## What it actually measures
 

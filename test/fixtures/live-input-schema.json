@@ -1,0 +1,107 @@
+{
+  "title": "Publication Cadence Tracker",
+  "description": "Give it a domain. It returns how much long-form work the company publishes per month, whether that rate is rising or falling, and in what formats. Free Apify-plan users get 800 results per calendar month (resets monthly); upgrade for unlimited: https://apify.com/pricing?fpr=mamba",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "domain": {
+      "title": "Company domain",
+      "type": "string",
+      "description": "A single company domain, for example zapier.com. Ignored when Company domains is filled.",
+      "editor": "textfield",
+      "prefill": "zapier.com",
+      "example": "zapier.com"
+    },
+    "domains": {
+      "title": "Company domains (batch)",
+      "type": "array",
+      "description": "Analyze many domains in one run. Takes precedence over the single domain field.",
+      "editor": "stringList",
+      "default": [],
+      "prefill": []
+    },
+    "max_pages_to_date": {
+      "title": "Max post pages to date",
+      "type": "integer",
+      "description": "Publication dates come from the post pages themselves, because sitemap lastmod is a modification date and runs later than publication by a median of 151 to 1653 days on the sites tested. This caps how many pages get fetched per domain. When a company has more candidate posts than the cap, an even sample across the archive is dated and the counts are marked as an estimate on the row. 400 dates most publishers outright and costs about 15 seconds.",
+      "editor": "number",
+      "default": 400,
+      "prefill": 400,
+      "minimum": 20,
+      "maximum": 800
+    },
+    "domain_time_budget_ms": {
+      "title": "Per-domain time budget (ms)",
+      "type": "integer",
+      "description": "Hard wall-clock ceiling per domain. When it is nearly spent the crawl stops and the row is emitted with what was gathered, partial_result true and reduced confidence, rather than risking a run timeout. 15000 to 240000.",
+      "editor": "number",
+      "default": 75000,
+      "prefill": 75000,
+      "minimum": 15000,
+      "maximum": 240000
+    },
+    "page_concurrency": {
+      "title": "Page fetch concurrency",
+      "type": "integer",
+      "description": "How many post pages to fetch at once within a single domain. 1 to 16. Raising it speeds up dating on large archives but is more likely to draw a rate limit.",
+      "editor": "number",
+      "default": 8,
+      "prefill": 8,
+      "minimum": 1,
+      "maximum": 16
+    },
+    "max_sitemap_fetches": {
+      "title": "Max sitemap fetches",
+      "type": "integer",
+      "description": "Cap on sitemap and sitemap-index documents fetched per domain. Large sites nest several levels; blog sections are visited first.",
+      "editor": "number",
+      "default": 18,
+      "prefill": 18,
+      "minimum": 4,
+      "maximum": 40
+    },
+    "batchSize": {
+      "title": "Concurrent domains",
+      "type": "integer",
+      "description": "How many domains to analyze at once. 1 to 8. Each domain runs its own page fetch pool, so this multiplies against Page fetch concurrency.",
+      "editor": "number",
+      "default": 2,
+      "prefill": 2,
+      "minimum": 1,
+      "maximum": 8
+    },
+    "request_timeout_ms": {
+      "title": "HTTP request timeout (ms)",
+      "type": "integer",
+      "description": "Per-request timeout for feeds, sitemaps and post pages. 3000 to 20000.",
+      "editor": "number",
+      "default": 9000,
+      "prefill": 9000,
+      "minimum": 3000,
+      "maximum": 20000
+    },
+    "skipCache": {
+      "title": "Skip the cache",
+      "type": "boolean",
+      "description": "Ignore the 3 day result cache and re-crawl every domain from scratch.",
+      "editor": "checkbox",
+      "default": false,
+      "prefill": false
+    },
+    "qa_test_mode": {
+      "title": "QA test mode",
+      "type": "boolean",
+      "description": "Emit a single summary row and skip all network work. Used for automated checks.",
+      "editor": "checkbox",
+      "default": false,
+      "prefill": false
+    },
+    "source_tag": {
+      "title": "Source Tag",
+      "type": "string",
+      "description": "Internal attribution tag set by Mamba Labs on published task examples. Not required, and nothing depends on it. Leave it empty.",
+      "editor": "hidden"
+    }
+  },
+  "required": []
+}
