@@ -101,6 +101,13 @@
       "type": "string",
       "description": "Internal attribution tag set by Mamba Labs on published task examples. Not required, and nothing depends on it. Leave it empty.",
       "editor": "hidden"
+    },
+    "max_charge_usd": {
+      "title": "Maximum charge for this run (USD)",
+      "type": "number",
+      "editor": "number",
+      "minimum": 0,
+      "description": "Optional. The run stops before any charge that would take this run past this amount, and saves every row already paid for. Leave empty to rely only on the maximum cost per run set in Apify, which the run also honors."
     }
   },
   "required": []
