@@ -41,6 +41,7 @@ Measured on nine live domains: a rate recovered on 5 of 6 publishers, 3 of 3 con
 | `page_concurrency` | integer | 1 to 16, default 8. Pages fetched at once within one domain. |
 | `max_sitemap_fetches` | integer | 4 to 40, default 18. Cap on sitemap files fetched per domain. |
 | `request_timeout_ms` | integer | 3000 to 20000, default 9000. Per HTTP request timeout. |
+| `max_charge_usd` | number | Optional spending cap for this call, in USD. The actor stops before any charge that would take the run past this amount and keeps every row already charged. |
 
 ## What it actually measures
 
@@ -49,6 +50,17 @@ Not whether a company has a blog. How much it published, when, and whether the r
 Finding the blog is most of the work, and it is where a naive version fails. The blog often lives on a different host from the apex and the apex sitemap never mentions it (`blog.hubspot.com`). A homepage sometimes advertises only a changelog feed while linking to the real blog repeatedly (`about.gitlab.com`). Paths are often locale prefixed, so `/en-uk/` and `/bg-bg/` fragment the archive into forty pieces. All three are handled, and `publication_url` reports a locale-prefixed section as `https://example.com/*/knowledge/`.
 
 **Three fields to read before you trust a number.** `date_source_reliable` false means the site's date field tracks edits rather than publication and every count has been nulled. `counts_are_estimate` true means the archive was larger than the page budget and the counts come from a scaled even sample, so two runs can differ by a few posts. `partial_result` true means the wall-clock budget stopped the crawl and the numbers are lower bounds.
+
+## Pricing
+
+You pay per event on Apify, billed to your own Apify account. Prices from the live pricing record, read 2026-10-16:
+
+| Event | Price per event (USD) | Fires when |
+| --- | --- | --- |
+| `actor-start` | $0.00005 | Charged once when the run starts. |
+| `domain-analyzed` | $0.004 on the Free plan, down to $0.0034 on higher Apify plans | Charged once per domain analyzed. Domains with no publication section, and domains whose date field turns out to track edits rather than publication, still count as analyzed and are charged. |
+
+The [actor's Apify page](https://apify.com/mambalabs/blog-publishing-frequency) carries the current prices. Running this server consumes Apify credits.
 
 ## Setup
 

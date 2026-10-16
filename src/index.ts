@@ -6,6 +6,16 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 
+// Optional per call spending cap, passed through to the actor's own max_charge_usd
+// input. The actor enforces it; this wrapper only forwards it when set.
+const MAX_CHARGE_USD = z
+  .number()
+  .min(0)
+  .optional()
+  .describe(
+    "Optional spending cap for this call, in USD, passed to the actor as max_charge_usd. The run stops before any charge that would take it past this amount and keeps every row already charged. Leave empty to rely only on the maximum charge per run set on your Apify account.",
+  );
+
 const here = dirname(fileURLToPath(import.meta.url));
 const pkg = JSON.parse(
   readFileSync(join(here, "..", "package.json"), "utf8"),
@@ -52,7 +62,9 @@ async function runActor(
   actorPath: string,
   actorLabel: string,
   input: Record<string, unknown>,
+  maxChargeUsd?: number,
 ): Promise<ToolResult> {
+  if (maxChargeUsd !== undefined) input = { ...input, max_charge_usd: maxChargeUsd };
   if (!APIFY_TOKEN) {
     return { isError: true, content: [{ type: "text", text: "APIFY_TOKEN is not set. Create a token at https://console.apify.com/account/integrations and set it as the APIFY_TOKEN environment variable." }] };
   }
@@ -190,10 +202,10 @@ server.registerTool(
   {
     title: "Track Publication Cadence",
     description:
-      "Given a company domain, measure how much long-form work that company publishes and whether the rate is rising or falling. Returns post counts for the last 30 days, 90 days and 12 months, a monthly average, and a cadence_trend of accelerating, steady, declining, dormant or unknown, plus the percent change behind it. The trend compares the last 90 days against the prior 275 days, both normalized to posts per month. Also returns the blog URL, the format mix (blog posts, guides, reports, case studies, whitepapers, podcasts, videos, press releases, research), the number of distinct bylines, and how the post list was discovered. This measures EDITORIAL output volume, not product changelogs: a release feed is detected and rejected rather than counted. Publication dates are read from the post pages themselves, because sitemap lastmod was measured to be a modification date that runs later than publication by a median of 151 to 1653 days. When a site's date field turns out to track edits rather than publication, date_source_reliable comes back false and every count is nulled rather than reported wrong, so check that field before quoting a number. Counts are a census when the archive fits the page budget and a scaled even sample otherwise, flagged by counts_are_estimate. Public sitemaps, feeds and pages only. Returns flat Clay-ready JSON. Read-only; requires an APIFY_TOKEN and consumes Apify credits per domain analyzed.",
+      "Given a company domain, measure how much long-form work that company publishes and whether the rate is rising or falling. Returns post counts for the last 30 days, 90 days and 12 months, a monthly average, and a cadence_trend of accelerating, steady, declining, dormant or unknown, plus the percent change behind it. The trend compares the last 90 days against the prior 275 days, both normalized to posts per month. Also returns the blog URL, the format mix (blog posts, guides, reports, case studies, whitepapers, podcasts, videos, press releases, research), the number of distinct bylines, and how the post list was discovered. This measures EDITORIAL output volume, not product changelogs: a release feed is detected and rejected rather than counted. Publication dates are read from the post pages themselves, because sitemap lastmod was measured to be a modification date that runs later than publication by a median of 151 to 1653 days. When a site's date field turns out to track edits rather than publication, date_source_reliable comes back false and every count is nulled rather than reported wrong, so check that field before quoting a number. Counts are a census when the archive fits the page budget and a scaled even sample otherwise, flagged by counts_are_estimate. Public sitemaps, feeds and pages only. Returns flat Clay-ready JSON. Reads public data and writes nothing; requires an APIFY_TOKEN and consumes Apify credits per domain analyzed.",
     annotations: {
       title: "Track Publication Cadence",
-      readOnlyHint: true,
+      readOnlyHint: false,
       destructiveHint: false,
       idempotentHint: true,
       openWorldHint: true,
@@ -253,9 +265,10 @@ server.registerTool(
         .max(20000)
         .optional()
         .describe("Per HTTP request timeout in milliseconds, 3000 to 20000, default 9000."),
+      max_charge_usd: MAX_CHARGE_USD,
     },
   },
-  async ({ domain, domains, max_pages_to_date, domain_time_budget_ms, batchSize, skipCache, page_concurrency, max_sitemap_fetches, request_timeout_ms }) => {
+  async ({ domain, domains, max_pages_to_date, domain_time_budget_ms, batchSize, skipCache, page_concurrency, max_sitemap_fetches, request_timeout_ms, max_charge_usd }) => {
     const hasSingle = domain !== undefined && domain !== "";
     const hasBatch = Array.isArray(domains) && domains.length > 0;
     if (!hasSingle && !hasBatch) {
@@ -278,7 +291,7 @@ server.registerTool(
         max_sitemap_fetches,
         request_timeout_ms,
       }),
-    );
+     max_charge_usd,);
   },
 );
 
