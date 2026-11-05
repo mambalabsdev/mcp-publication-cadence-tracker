@@ -6,7 +6,7 @@
 
 <a href="https://mcprush.com/to/publication-cadence-tracker-mcp?ref=badge"><img width="380" height="200" src="https://mcprush.com/badge/publication-cadence-tracker-mcp/card.svg" alt="Publication Cadence Tracker MCP server" /></a>
 
-MCP server for the Mamba Labs [Publication Cadence Tracker](https://apify.com/mambalabs/publication-cadence-tracker) actor on Apify.
+MCP server for the Mamba Labs [Publishing Frequency Tracker](https://apify.com/mambalabs/blog-publishing-frequency) actor on Apify.
 
 Give it a company domain. It tells your agent how much long-form work that company publishes per month, and whether that rate is rising or falling.
 
